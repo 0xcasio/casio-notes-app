@@ -11,17 +11,14 @@ import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-// Define params type exactly as Next.js expects
-type PageParams = {
-  id: string;
-};
+// Define the params interface to match Next.js expectations
+interface PageProps {
+  params: { id: string };
+}
 
-// Generate metadata with correct param typing
 export async function generateMetadata({ 
-  params,
-}: {
-  params: PageParams;
-}): Promise<Metadata> {
+  params 
+}: PageProps): Promise<Metadata> {
   const supabase = await createClient();
   const { data: task } = await supabase
     .from("tasks")
@@ -35,12 +32,9 @@ export async function generateMetadata({
   };
 }
 
-// Page component with correct param typing
 export default async function TaskDetailPage({ 
-  params,
-}: {
-  params: PageParams;
-}) {
+  params 
+}: PageProps) {
   const supabase = await createClient();
   
   const { data: taskData, error } = await supabase
@@ -53,7 +47,6 @@ export default async function TaskDetailPage({
     notFound();
   }
   
-  // Ensure all required fields have values even if missing in database
   const task: Task = {
     ...taskData,
     status: taskData.status as TaskStatus || TaskStatus.TODO,
