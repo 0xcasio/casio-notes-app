@@ -11,19 +11,22 @@ import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-// Define the params interface to match Next.js expectations
-interface PageProps {
-  params: { id: string };
-}
+// Define params as a Promise type as recommended
+type Params = Promise<{ id: string }>;
 
 export async function generateMetadata({ 
   params 
-}: PageProps): Promise<Metadata> {
+}: { 
+  params: Params 
+}): Promise<Metadata> {
+  // Await the params to get the id
+  const { id } = await params;
+  
   const supabase = await createClient();
   const { data: task } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   return {
@@ -34,13 +37,18 @@ export async function generateMetadata({
 
 export default async function TaskDetailPage({ 
   params 
-}: PageProps) {
+}: { 
+  params: Params 
+}) {
+  // Await the params to get the id
+  const { id } = await params;
+  
   const supabase = await createClient();
   
   const { data: taskData, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
     
   if (error || !taskData) {
@@ -66,7 +74,7 @@ export default async function TaskDetailPage({
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">{task.title}</h1>
           <Button asChild>
-            <Link href={`/protected/tasks/${params.id}/edit`}>
+            <Link href={`/protected/tasks/${id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Task
             </Link>

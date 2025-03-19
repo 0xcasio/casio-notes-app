@@ -6,19 +6,22 @@ import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-// Define the params interface to match Next.js expectations
-interface PageProps {
-  params: { id: string };
-}
+// Define params as a Promise type as recommended
+type Params = Promise<{ id: string }>;
 
 export async function generateMetadata({ 
   params 
-}: PageProps): Promise<Metadata> {
+}: { 
+  params: Params 
+}): Promise<Metadata> {
+  // Await the params to get the id
+  const { id } = await params;
+  
   const supabase = await createClient();
   const { data: task } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   return {
@@ -29,13 +32,18 @@ export async function generateMetadata({
 
 export default async function EditTaskPage({ 
   params 
-}: PageProps) {
+}: { 
+  params: Params 
+}) {
+  // Await the params to get the id
+  const { id } = await params;
+  
   const supabase = await createClient();
   
   const { data: taskData, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
     
   if (error || !taskData) {
@@ -55,7 +63,7 @@ export default async function EditTaskPage({
   return (
     <div className="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-bold mb-6">Edit Task</h1>
-      <TaskForm taskId={params.id} initialData={initialData} />
+      <TaskForm taskId={id} initialData={initialData} />
     </div>
   );
 } 
