@@ -11,18 +11,17 @@ import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-type PageProps = {
-  params: { id: string };
-};
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const id = await params.id;
-  
+// Simplify the interface to match what Next.js expects
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { id: string } 
+}): Promise<Metadata> {
   const supabase = await createClient();
   const { data: task } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", id)
+    .eq("id", params.id)
     .single();
 
   return {
@@ -31,15 +30,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function TaskDetailPage({ params }: PageProps) {
-  const id = await params.id;
-  
+export default async function TaskDetailPage({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
   const supabase = await createClient();
   
   const { data: taskData, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", id)
+    .eq("id", params.id)
     .single();
     
   if (error || !taskData) {
@@ -66,7 +67,7 @@ export default async function TaskDetailPage({ params }: PageProps) {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">{task.title}</h1>
           <Button asChild>
-            <Link href={`/protected/tasks/${id}/edit`}>
+            <Link href={`/protected/tasks/${params.id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Task
             </Link>
