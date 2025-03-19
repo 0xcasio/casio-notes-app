@@ -7,25 +7,20 @@ import TaskStatusBadge from "../components/TaskStatusBadge";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit, ArrowLeft } from "lucide-react";
+import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-interface TaskDetailPageProps {
-  params: {
-    id: string;
-  };
+interface Props {
+  params: { id: string };
 }
 
-export async function generateMetadata({ params }: TaskDetailPageProps) {
-  // Await the params object before accessing its properties
-  const resolvedParams = await Promise.resolve(params);
-  const id = resolvedParams.id;
-  
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const supabase = await createClient();
   const { data: task } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", id)
+    .eq("id", params.id)
     .single();
 
   return {
@@ -34,17 +29,13 @@ export async function generateMetadata({ params }: TaskDetailPageProps) {
   };
 }
 
-export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
-  // Await the params object before accessing its properties
-  const resolvedParams = await Promise.resolve(params);
-  const id = resolvedParams.id;
-  
+export default async function TaskDetailPage({ params }: Props) {
   const supabase = await createClient();
   
   const { data: taskData, error } = await supabase
     .from("tasks")
     .select("*")
-    .eq("id", id)
+    .eq("id", params.id)
     .single();
     
   if (error || !taskData) {
@@ -71,7 +62,7 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">{task.title}</h1>
           <Button asChild>
-            <Link href={`/protected/tasks/${id}/edit`}>
+            <Link href={`/protected/tasks/${params.id}/edit`}>
               <Edit className="h-4 w-4 mr-2" />
               Edit Task
             </Link>
