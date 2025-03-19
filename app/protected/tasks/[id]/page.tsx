@@ -4,18 +4,15 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { Task, TaskStatus, TaskPriority } from "@/types";
 import TaskStatusBadge from "../components/TaskStatusBadge";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit, ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-// Simplify the interface to match what Next.js expects
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: { id: string } 
+export async function generateMetadata({ params }: {
+  params: { id: string }
 }): Promise<Metadata> {
   const supabase = await createClient();
   const { data: task } = await supabase
@@ -30,10 +27,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function TaskDetailPage({ 
-  params 
-}: { 
-  params: { id: string } 
+export default async function TaskDetailPage({ params }: {
+  params: { id: string }
 }) {
   const supabase = await createClient();
   

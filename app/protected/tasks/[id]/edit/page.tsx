@@ -6,10 +6,7 @@ import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-// Simplify the interface to match what Next.js expects
-export async function generateMetadata({ 
-  params 
-}: { 
+export async function generateMetadata({ params }: {
   params: { id: string } 
 }): Promise<Metadata> {
   const supabase = await createClient();
@@ -25,10 +22,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function EditTaskPage({ 
-  params 
-}: { 
-  params: { id: string } 
+export default async function EditTaskPage({ params }: {
+  params: { id: string }
 }) {
   const supabase = await createClient();
   
