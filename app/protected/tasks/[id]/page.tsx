@@ -7,12 +7,20 @@ import TaskStatusBadge from "../components/TaskStatusBadge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Edit, ArrowLeft } from "lucide-react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: {
-  params: { id: string }
+// Define params type exactly as Next.js expects
+type PageParams = {
+  id: string;
+};
+
+// Generate metadata with correct param typing
+export async function generateMetadata({ 
+  params,
+}: {
+  params: PageParams;
 }): Promise<Metadata> {
   const supabase = await createClient();
   const { data: task } = await supabase
@@ -27,8 +35,11 @@ export async function generateMetadata({ params }: {
   };
 }
 
-export default async function TaskDetailPage({ params }: {
-  params: { id: string }
+// Page component with correct param typing
+export default async function TaskDetailPage({ 
+  params,
+}: {
+  params: PageParams;
 }) {
   const supabase = await createClient();
   
