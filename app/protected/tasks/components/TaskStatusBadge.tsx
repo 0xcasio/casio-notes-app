@@ -3,9 +3,11 @@ import { TaskStatus } from '@/types';
 
 interface TaskStatusBadgeProps {
   status: TaskStatus;
+  onClick?: () => void;
+  className?: string;
 }
 
-export default function TaskStatusBadge({ status }: TaskStatusBadgeProps) {
+export default function TaskStatusBadge({ status, onClick, className = '' }: TaskStatusBadgeProps) {
   // Define styles based on status
   const getStatusStyle = () => {
     switch (status) {
@@ -35,7 +37,10 @@ export default function TaskStatusBadge({ status }: TaskStatusBadgeProps) {
   };
 
   return (
-    <Badge className={getStatusStyle()}>
+    <Badge 
+      className={`${getStatusStyle()} ${className} ${onClick ? 'cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       {getStatusLabel()}
     </Badge>
   );
