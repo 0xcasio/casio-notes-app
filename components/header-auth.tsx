@@ -64,6 +64,9 @@ export default async function AuthButton() {
             <Link href="/protected/profile">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link href="/protected/tasks">My Tasks</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href="/protected">Dashboard</Link>
           </DropdownMenuItem>
           <form action={signOutAction} className="w-full">
